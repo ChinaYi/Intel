@@ -58,7 +58,7 @@ DROP TABLE IF EXISTS `history`;
 CREATE TABLE `history` (
   `BID` varchar(45) NOT NULL,
   `start_time` datetime NOT NULL,
-  `end_time` varchar(45) DEFAULT NULL,
+  `end_time` datetime DEFAULT NULL,
   `s_x` double DEFAULT NULL,
   `s_y` double DEFAULT NULL,
   `e_x` double DEFAULT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('qwer0001','2016-07-16 12:20:33','2016-07-16 15:20:33',12.15,12.16,12.17,12.18);
+INSERT INTO `history` VALUES ('qwer0001','2016-07-16 12:20:33','2016-07-30 17:12:31',12.15,12.16,116.36,39.63);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -118,6 +118,7 @@ CREATE TABLE `normaluser` (
   `email` varchar(45) NOT NULL,
   `B_ID` varchar(45) DEFAULT NULL,
   `scores` int(11) DEFAULT '0',
+  `isworking` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`username`),
   KEY `BID_idx` (`B_ID`),
   CONSTRAINT `B_ID` FOREIGN KEY (`B_ID`) REFERENCES `blinduser` (`BID`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -130,8 +131,37 @@ CREATE TABLE `normaluser` (
 
 LOCK TABLES `normaluser` WRITE;
 /*!40000 ALTER TABLE `normaluser` DISABLE KEYS */;
-INSERT INTO `normaluser` VALUES ('shenjialiang','123456','123456',NULL,NULL),('test1','email1','password1',NULL,0),('yifangqi','123456','123455',NULL,NULL),('yifangqiu','123456','1351169740@qq.com','qwer0001',NULL);
+INSERT INTO `normaluser` VALUES ('shenjialiang','123456','123456',NULL,NULL,0),('test1','email1','password1',NULL,0,0),('yifangqi','123456','123455',NULL,NULL,0),('yifangqiu','123456','1351169740@qq.com','qwer0001',NULL,0);
 /*!40000 ALTER TABLE `normaluser` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `normaluser_history`
+--
+
+DROP TABLE IF EXISTS `normaluser_history`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `normaluser_history` (
+  `time` datetime NOT NULL,
+  `x` double NOT NULL,
+  `y` double NOT NULL,
+  `scores` int(11) NOT NULL DEFAULT '0',
+  `username` varchar(30) NOT NULL,
+  `BID` varchar(45) NOT NULL,
+  `issuccess` tinyint(4) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`BID`,`time`,`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `normaluser_history`
+--
+
+LOCK TABLES `normaluser_history` WRITE;
+/*!40000 ALTER TABLE `normaluser_history` DISABLE KEYS */;
+INSERT INTO `normaluser_history` VALUES ('1997-03-15 22:15:00',12,12,5,'yifangqiu','qwer0001',0),('2016-08-17 14:38:32',116.36,39.63,1,'yifangqiu','qwer0001',0),('2016-08-17 14:42:21',116.36,39.63,1,'yifangqiu','qwer0001',1),('2016-08-17 14:47:34',116.36,39.63,1,'yifangqiu','qwer0001',1);
+/*!40000 ALTER TABLE `normaluser_history` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -143,4 +173,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-07-28 11:26:47
+-- Dump completed on 2016-08-20 14:31:17
