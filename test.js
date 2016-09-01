@@ -31,15 +31,11 @@ var interval = setInterval(getTargetInterval,period);
 //refresh target for all connected clients in a period time
 function getTargetInterval()
 {
-    /*
-
-        There should be more code to certify whether hashmap is empty
-        ***********************************************************
-        * *********************************************************
-        * *********************************************************
-     */
-    for(var key in c_password_target){
-        getTarget(c_password_target,key);
+    if(c_password_target.count() >= 0)
+    {
+        for(var key in c_password_target){
+            getTarget(c_password_target,key);
+        }
     }
 }
 
@@ -58,25 +54,24 @@ function getTarget(c_password_target,password)
 //insert record to history table
 function startTrip(bid,s_x,s_y,start_time)
 {
-    pool.getConnection(function(err,connection){
-        if(err) console.error(err);
-        else{
-            connection.query('insert into blindgo.history(bid,start_time,s_x,s_y) values(?,?,?,?) ',
-                                [bid, start_time.Format("yyyy-MM-dd hh:mm:ss"), s_x, s_y],function(err){
-                                    if(err) console.error(err);
-                });
-            connection.release();
-        }
-    })
+    if(start_time != null) {
+        pool.getConnection(function (err, connection) {
+            if (err) console.error(err);
+            else {
+                connection.query('insert into blindgo.history(bid,start_time,s_x,s_y) values(?,?,?,?) ',
+                    [bid, start_time.Format("yyyy-MM-dd hh:mm:ss"), s_x, s_y], function (err) {
+                        if (err) console.error(err);
+                    });
+                connection.release();
+            }
+        })
+    }
 }
 
 //update the record in history table
 function endTrip(bid,e_x,e_y,start_time)
 {
-    if(start_time == null)
-    {
-        return;
-    }else{
+    if(start_time != null)
         pool.getConnection(function(err,connection){
             if(err) console.error(err);
             else{
@@ -90,8 +85,6 @@ function endTrip(bid,e_x,e_y,start_time)
                 connection.release();
             }
         })
-    }
-
 }
 
 //Useage : new Date().Format(fmt)
@@ -128,17 +121,20 @@ var authenticate = function(client,username,password,callback){
                 password_historyID.set(password.toString(),new Date());
                 //means a client start his trip
                 setTimeout(function(){
-                    pool.getConnection(function(err,connection){
-                        if(err) console.error(err);
-                        else{
-                            connection.query('select current_x, current_y from blindgo.blinduser where bid = ?',[password],function(err,rows){
-                                if(err) console.error(err);
-                                else{
-                                    startTrip(password.toString(), rows[0].current_x, rows[0].current_y, password_historyID.get(password.toString()));
-                                }
-                            })
-                        }
-                    })
+                    if(password != null)
+                    {
+                        pool.getConnection(function(err,connection){
+                            if(err) console.error(err);
+                            else{
+                                connection.query('select current_x, current_y from blindgo.blinduser where bid = ?',[password],function(err,rows){
+                                    if(err) console.error(err);
+                                    else{
+                                        startTrip(password.toString(), rows[0].current_x, rows[0].current_y, password_historyID.get(password.toString()));
+                                    }
+                                })
+                            }
+                        })
+                    }
                 },5000);
             }
             connection.release();
