@@ -45,7 +45,7 @@ CREATE TABLE `blinduser` (
 
 LOCK TABLES `blinduser` WRITE;
 /*!40000 ALTER TABLE `blinduser` DISABLE KEYS */;
-INSERT INTO `blinduser` VALUES ('qwer0001','I am a blindmen who was no money',116.36,39.63,'13261192585',NULL,1,116.4569,39.9,1),('qwer0002','I love yuanYuanDan,wo zhen de hao xiang ni',116.36,39.63,'13261192585',NULL,1,116.4596,39.9,0);
+INSERT INTO `blinduser` VALUES ('qwer0001','I am a blindmen who was no money',116.36,39.63,'13261192585','13261192585',1,116.4569,39.9,1),('qwer0002','I love yuanYuanDan,wo zhen de hao xiang ni',116.36,39.63,'13261192585',NULL,1,116.4596,39.9,0);
 /*!40000 ALTER TABLE `blinduser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,10 +116,10 @@ DROP TABLE IF EXISTS `normaluser`;
 CREATE TABLE `normaluser` (
   `username` varchar(30) NOT NULL,
   `password` varchar(45) NOT NULL,
-  `email` varchar(45) NOT NULL,
   `B_ID` varchar(45) DEFAULT NULL,
   `scores` int(11) DEFAULT '0',
   `isworking` tinyint(4) NOT NULL DEFAULT '0',
+  `phone` varchar(45) NOT NULL,
   PRIMARY KEY (`username`),
   KEY `BID_idx` (`B_ID`),
   CONSTRAINT `B_ID` FOREIGN KEY (`B_ID`) REFERENCES `blinduser` (`BID`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -132,7 +132,7 @@ CREATE TABLE `normaluser` (
 
 LOCK TABLES `normaluser` WRITE;
 /*!40000 ALTER TABLE `normaluser` DISABLE KEYS */;
-INSERT INTO `normaluser` VALUES ('shenjialiang','123456','123456',NULL,NULL,0),('test1','email1','password1',NULL,0,0),('yifangqi','123456','123455',NULL,NULL,0),('yifangqiu','123456','1351169740@qq.com','qwer0001',NULL,0);
+INSERT INTO `normaluser` VALUES ('shenjialiang','123456',NULL,NULL,0,'13261192585'),('test1','123456',NULL,0,0,'13261192585'),('yifangqi','123456',NULL,NULL,0,'13261192585'),('yifangqiu','123456','qwer0001',NULL,0,'13261192585');
 /*!40000 ALTER TABLE `normaluser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -174,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-09-01 16:05:50
+-- Dump completed on 2016-09-02 10:52:53
