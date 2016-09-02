@@ -34,6 +34,7 @@ CREATE TABLE `blinduser` (
   `isneedhelp` tinyint(4) DEFAULT '0',
   `target_x` double DEFAULT '0',
   `target_y` double DEFAULT '0',
+  `isneedcalling` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`BID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -44,7 +45,7 @@ CREATE TABLE `blinduser` (
 
 LOCK TABLES `blinduser` WRITE;
 /*!40000 ALTER TABLE `blinduser` DISABLE KEYS */;
-INSERT INTO `blinduser` VALUES ('qwer0001','I am a blindmen who was no money',116.36,39.63,'13261192585',NULL,0,116.4569,39.9),('qwer0002','I love yuanYuanDan,wo zhen de hao xiang ni',116.36,39.63,'13261192585',NULL,0,116.4596,39.9);
+INSERT INTO `blinduser` VALUES ('qwer0001','I am a blindmen who was no money',116.36,39.63,'13261192585',NULL,1,116.4569,39.9,1),('qwer0002','I love yuanYuanDan,wo zhen de hao xiang ni',116.36,39.63,'13261192585',NULL,1,116.4596,39.9,0);
 /*!40000 ALTER TABLE `blinduser` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -74,7 +75,7 @@ CREATE TABLE `history` (
 
 LOCK TABLES `history` WRITE;
 /*!40000 ALTER TABLE `history` DISABLE KEYS */;
-INSERT INTO `history` VALUES ('qwer0001','2016-07-16 12:20:33','2016-07-30 17:12:31',12.15,12.16,116.36,39.63);
+INSERT INTO `history` VALUES ('qwer0001','2016-07-16 12:20:33','2016-07-30 17:12:31',12.15,12.16,116.36,39.63),('qwer0001','2016-08-20 18:39:19','2016-08-20 18:39:28',116.36,39.63,116.36,39.63),('qwer0001','2016-08-20 19:00:42','2016-08-20 19:00:48',116.36,39.63,116.36,39.63),('qwer0001','2016-08-20 19:25:49','2016-08-20 19:25:52',116.36,39.63,116.36,39.63),('qwer0001','2016-08-20 19:25:52','2016-08-20 19:26:03',116.36,39.63,116.36,39.63),('qwer0001','2016-09-01 11:08:19','2016-09-01 11:08:29',116.36,39.63,116.36,39.63),('qwer0001','2016-09-01 11:08:38','2016-09-01 11:08:45',116.36,39.63,116.36,39.63);
 /*!40000 ALTER TABLE `history` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +161,7 @@ CREATE TABLE `normaluser_history` (
 
 LOCK TABLES `normaluser_history` WRITE;
 /*!40000 ALTER TABLE `normaluser_history` DISABLE KEYS */;
-INSERT INTO `normaluser_history` VALUES ('1997-03-15 22:15:00',12,12,5,'yifangqiu','qwer0001',0),('2016-08-17 14:38:32',116.36,39.63,1,'yifangqiu','qwer0001',0),('2016-08-17 14:42:21',116.36,39.63,1,'yifangqiu','qwer0001',1),('2016-08-17 14:47:34',116.36,39.63,1,'yifangqiu','qwer0001',1);
+INSERT INTO `normaluser_history` VALUES ('2016-08-17 14:42:21',116.36,39.63,1,'yifangqiu','qwer0001',1),('2016-08-17 14:47:34',116.36,39.63,1,'yifangqiu','qwer0001',1);
 /*!40000 ALTER TABLE `normaluser_history` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -173,4 +174,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-08-20 14:31:17
+-- Dump completed on 2016-09-01 16:05:50
