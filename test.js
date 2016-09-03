@@ -7,7 +7,7 @@
 var mosca = require('mosca');
 
 //HashMap is a map
-var HashMap = require('HashMap');
+var HashMap = require('hashmap');
 
 
 var pool = require('./connectFactory').pool;
@@ -87,6 +87,75 @@ function endTrip(bid,e_x,e_y,start_time)
         })
 }
 
+function changeHelpStatus(bid, status)
+{
+    if(bid != null)
+    {
+        pool.getConnection(function(err, connection){
+            if(err) console.error(err);
+            else{
+                connection.query('update blindgo.blinduser set isneedhelp = ? where bid = ?',
+                    [status, bid],function(err){
+                        if(err) console.error(err);
+                    })
+            }
+            connection.release();
+        })
+    }
+}
+function changeCallStatus(bid, status){
+    if(bid != null)
+    {
+        pool.getConnection(function(err, connection){
+            if(err) console.error(err);
+            else{
+                connection.query('update blindgo.blinduser set isneedcalling = ? where bid = ?',
+                    [status, bid], function(err){
+                        if(err) console.error(err);
+                    })
+            }
+            connection.release();
+        })
+    }
+}
+function changeWorkStatus(bid, status){
+    if(bid != null)
+    {
+        pool.getConnection(function(err, connection){
+            if(err) console.error(err);
+            else{
+                connection.query('update blindgo.blinduser set work = ? where bid = ?',
+                    [status,bid], function(err){
+                        if(err) console.error(err);
+                    })
+            }
+            connection.release();
+        })
+    }
+}
+function checkAndCall(bid)
+{
+    if(bid != null)
+    {
+        pool.getConnection(function(err, connection){
+            if(err) console.error(err);
+            else{
+                connection.query('select isneedhelp from blindgo.blinduser where bid = ?',
+                    [bid], function(err, rows){
+                        if(err) console.error(err);
+                        else{
+                            if(rows[0].isneedhelp == 1){
+                                changeHelpStatus(bid,0);
+                                changeCallStatus(bid,1);
+                            }
+                        }
+                    })
+            }
+            connection.release();
+        })
+    }
+
+}
 //Useage : new Date().Format(fmt)
 Date.prototype.Format = function (fmt) {
     var o = {
@@ -130,6 +199,7 @@ var authenticate = function(client,username,password,callback){
                                     if(err) console.error(err);
                                     else{
                                         startTrip(password.toString(), rows[0].current_x, rows[0].current_y, password_historyID.get(password.toString()));
+                                        changeWorkStatus(password.toString(),1);
                                     }
                                 })
                             }
@@ -196,6 +266,7 @@ mqttServer.on('published',function(packet,client){
                                     //This segment of code should do that:
                                     //1. search table and find if isneedhelp = 1;
                                     //2. call phone.
+                                    checkAndCall(jsondata.bid);
                                 },5000)
                             }
                         });
@@ -229,6 +300,7 @@ mqttServer.on('clientDisconnected',function(client){
                 if(err) console.error(err);
                 else{
                     endTrip(password, rows[0].current_x, rows[0].current_y,start_time);
+                    changeWorkStatus(password, 0);
                 }
             });
             connection.release();

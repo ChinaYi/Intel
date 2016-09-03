@@ -13,13 +13,16 @@ var client = mqtt.connect('mqtt://localhost:1997',{
 //client publish message, and subscribe result
 client.on('connect',function(){
     console.log('connected...')
-    var message = {
+    /*var message = {
         "x" : 116.36,
         "y" : 39.63,
         "orientation": 45,
         "bid" : 'qwer0001'
-    };
-    client.publish('work',JSON.stringify(message));
+    };*/
+    var message = {
+        "bid": 'qwer0001'
+    }
+    client.publish('emergency',JSON.stringify(message));
     client.subscribe('qwer0001');
 });
 
