@@ -7,6 +7,7 @@ var mqtt = require('mqtt');
 
 
 exports.mapserver = function(origin_x,origin_y,destination_x,destination_y,b_orientation, callback){
+    //if(Math.sqrt(Math.pow(origin_x - destination_x, 2) + Math.pow(origin_y - destination_y, 2)) <= 0.0001)
     var url = 'http://restapi.amap.com/v3/direction/walking?origin='
         + origin_x+ ',' + origin_y + '&destination='
         + destination_x + ',' + destination_y

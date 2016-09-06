@@ -7,22 +7,23 @@ var mqtt = require('mqtt');
 var client = mqtt.connect('mqtt://localhost:1997',{
     username : 'username',
     password : 'qwer0001',
-    keepalive : 10,
+    keepalive : 10
 });
 
 //client publish message, and subscribe result
 client.on('connect',function(){
     console.log('connected...')
-    /*var message = {
+    var message = {
         "x" : 116.36,
         "y" : 39.63,
         "orientation": 45,
-        "bid" : 'qwer0001'
-    };*/
-    var message = {
+        "bid" : 'qwer0001',
+        "foots" :12306
+    };
+    /*var message = {
         "bid": 'qwer0001'
-    }
-    client.publish('emergency',JSON.stringify(message));
+    }*/
+    client.publish('work',JSON.stringify(message));
     client.subscribe('qwer0001');
 });
 

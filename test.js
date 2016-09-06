@@ -25,6 +25,7 @@ var period = 1000 * 30;
 var c_password_target = new HashMap();
 var c_clientID_password = new HashMap();
 var password_historyID = new HashMap();
+var password_foots = new HashMap();
 
 var interval = setInterval(getTargetInterval,period);
 
@@ -69,14 +70,14 @@ function startTrip(bid,s_x,s_y,start_time)
 }
 
 //update the record in history table
-function endTrip(bid,e_x,e_y,start_time)
+function endTrip(bid,e_x,e_y,start_time, foots)
 {
     if(start_time != null)
         pool.getConnection(function(err,connection){
             if(err) console.error(err);
             else{
-                connection.query('update blindgo.history set end_time = ?, e_x = ?, e_y = ? where bid = ? and `start_time` = ?',
-                    [new Date(), e_x, e_y, bid, start_time.Format("yyyy-MM-dd hh:mm:ss")], function(err){
+                connection.query('update blindgo.history set end_time = ?, e_x = ?, e_y = ?, foots = ? where bid = ? and `start_time` = ?',
+                    [new Date(), e_x, e_y, foots, bid, start_time.Format("yyyy-MM-dd hh:mm:ss")], function(err){
                         if(err) console.error(err);
                         else{
                             console.log(start_time.Format("yyyy-MM-dd hh:mm:ss"));
@@ -188,6 +189,7 @@ var authenticate = function(client,username,password,callback){
                 getTarget(c_password_target,password.toString());
 
                 password_historyID.set(password.toString(),new Date());
+                password_foots.set(password.toString(), 0);
                 //means a client start his trip
                 setTimeout(function(){
                     if(password != null)
@@ -240,6 +242,7 @@ mqttServer.on('published',function(packet,client){
                         });
                     }
                 });
+                password_foots.set(jsondata.bid,jsondata.foots);
                 //update the database
                 pool.getConnection(function(err,connection){
                     connection.query('UPDATE blindgo.blinduser set current_x = ?, current_y= ? where BID = ?',
@@ -293,13 +296,14 @@ mqttServer.on('ready', function(){
 mqttServer.on('clientDisconnected',function(client){
     var password = c_clientID_password.get(client.id);
     var start_time = password_historyID.get(password);
+    var foots = password_foots.get(password);
     pool.getConnection(function(err,connection){
         if(err) console.error(err);
         else{
             connection.query('select current_x, current_y from blindgo.blinduser where bid = ?',[password],function(err,rows){
                 if(err) console.error(err);
                 else{
-                    endTrip(password, rows[0].current_x, rows[0].current_y,start_time);
+                    endTrip(password, rows[0].current_x, rows[0].current_y,start_time, foots);
                     changeWorkStatus(password, 0);
                 }
             });
@@ -309,4 +313,5 @@ mqttServer.on('clientDisconnected',function(client){
     c_clientID_password.remove(client.id);
     c_password_target.remove(password);
     password_historyID.remove(password);
+    password_foots.remove(password);
 });
