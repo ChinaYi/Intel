@@ -288,7 +288,7 @@ mqttServer.on('published',function(packet,client){
                         var jsonResponse = mymap.getResponse(b_orientation, m_orientation);
                         mqttServer.publish({
                             topic : jsondata.bid,
-                            payload : jsonResponse.toString()
+                            payload : jsonResponse
                         });
                     }
                 });
