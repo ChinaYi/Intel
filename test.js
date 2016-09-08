@@ -21,14 +21,45 @@ var mqttServer = new mosca.Server({
     port : 1997
 });
 
-var period = 1000 * 30;
+var period = 1000 * 20;
 var c_password_target = new HashMap();
 var c_clientID_password = new HashMap();
 var password_historyID = new HashMap();
 var password_foots = new HashMap();
 
+var password_handle = new HashMap();
+
 var interval = setInterval(getTargetInterval,period);
 
+//check if calling or already finish the help, publish ok to mqtt client
+function hello(bid)
+{
+    return function(){
+        checkAndpublish(bid);
+    }
+}
+function checkAndpublish(bid)
+{
+    if(bid != null){
+        pool.getConnection(function(err,connection){
+            connection.query('select isneedcalling, isneedhelp from blindgo.blinduser where bid = ?',
+                [bid],function(err, rows){
+                    if(err) console.error(err);
+                    else{
+                        if((rows[0].isneedhelp) == 0 || rows[0].isneedcalling == 1){
+                            mqttServer.publish({
+                                topic : bid,
+                                payload : 'ok'
+                            });
+                            clearInterval(password_handle.get(bid));
+                            password_handle.remove(bid);
+                        }
+                    }
+                })
+            connection.release();
+        })
+    }
+}
 //refresh target for all connected clients in a period time
 function getTargetInterval()
 {
@@ -175,7 +206,6 @@ function checkAndCall(bid)
             connection.release();
         })
     }
-
 }
 //Useage : new Date().Format(fmt)
 Date.prototype.Format = function (fmt) {
@@ -278,19 +308,16 @@ mqttServer.on('published',function(packet,client){
         //emergency means client needs help
         case 'emergency':
             try{
-                var jsondata = JSON.parse(packet.payload.toString());
+                jsondata = JSON.parse(packet.payload.toString());
                 pool.getConnection(function (err, connection) {
                     connection.query('update blindgo.blinduser set isneedhelp = 1 where BID = ?',
                         [jsondata.bid],function(err){
                             if(err) console.log("emergency wrong!"+err);
                             else{
-                                mqttServer.publish({topic : jsondata.bid, payload : "true"});
+                                password_handle.set(jsondata.bid,setInterval(hello(jsondata.bid),60000));
                                 setTimeout(function(){
-                                    //This segment of code should do that:
-                                    //1. search table and find if isneedhelp = 1;
-                                    //2. call phone.
                                     checkAndCall(jsondata.bid);
-                                },5000)
+                                },120000)
                             }
                         });
                     connection.release();
