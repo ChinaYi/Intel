@@ -5,7 +5,7 @@
 
 //mosca is a common mqtt server
 var mosca = require('mosca');
-
+require('events').EventEmitter.prototype._maxListeners = 0;
 //HashMap is a map
 var HashMap = require('hashmap');
 
@@ -279,6 +279,7 @@ mqttServer.on('published',function(packet,client){
             try{
                 var jsondata = JSON.parse(packet.payload.toString());
                 //mymap server
+                console.log('work!'+jsondata);
                 mymap.mapserver(jsondata.x,jsondata.y,(c_password_target.get(jsondata.bid)).target_x,
                     (c_password_target.get(jsondata.bid)).target_y,jsondata.orientation,
                     function(err, b_orientation, m_orientation)
@@ -290,6 +291,7 @@ mqttServer.on('published',function(packet,client){
                             topic : jsondata.bid,
                             payload : jsonResponse
                         });
+			console.log('wofale'+jsondata.bid+jsonResponse.toString());
                     }
                 });
                 password_foots.set(jsondata.bid,jsondata.foots);
